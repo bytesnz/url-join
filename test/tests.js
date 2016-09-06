@@ -69,6 +69,11 @@ describe('url join', function () {
       .should.eql('/test/path/here');
   });
 
+  it('should work for absolute urls with a single slash to start and start sliash on next', function() {
+    urljoin('/', '/test', 'path', 'here')
+      .should.eql('/test/path/here');
+  });
+
   it('should work for relative urls', function() {
     urljoin('test', 'path', 'here')
       .should.eql('test/path/here');
