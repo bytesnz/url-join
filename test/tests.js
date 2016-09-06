@@ -16,6 +16,11 @@ describe('url join', function () {
       .should.eql('http://www.google.com/#!/foo/bar?test=123');
   });
 
+  it('should ignore undefined parts', function () {
+    urljoin(['http://www.google.com', undefined, '#!', 'foo/bar', '?test=123'])
+      .should.eql('http://www.google.com/#!/foo/bar?test=123');
+  });
+
   it('should be able to join protocol', function () {
     urljoin('http:', 'www.google.com/', 'foo/bar', '?test=123')
       .should.eql('http://www.google.com/foo/bar?test=123');
@@ -41,6 +46,11 @@ describe('url join', function () {
       .should.eql('//www.google.com/foo/bar?test=123')
   });
 
+  it('should support split protocol-relative urls', function () {
+    urljoin('//', 'www.google.com', 'foo/bar', '?test=123')
+      .should.eql('//www.google.com/foo/bar?test=123')
+  });
+
   it('should merge multiple query params properly', function () {
     urljoin('http:', 'www.google.com///', 'foo/bar', '?test=123', '?key=456')
       .should.eql('http://www.google.com/foo/bar?test=123&key=456');
@@ -48,4 +58,30 @@ describe('url join', function () {
     urljoin('http:', 'www.google.com///', 'foo/bar', '?test=123', '?boom=value', '&key=456')
       .should.eql('http://www.google.com/foo/bar?test=123&boom=value&key=456');
   });
+
+  it('should work for absolute urls', function() {
+    urljoin('/test', 'path', 'here')
+      .should.eql('/test/path/here');
+  });
+
+  it('should work for absolute urls with a single slash to start', function() {
+    urljoin('/', 'test', 'path', 'here')
+      .should.eql('/test/path/here');
+  });
+
+  it('should work for relative urls', function() {
+    urljoin('test', 'path', 'here')
+      .should.eql('test/path/here');
+  });
+
+  it('should ignore undefined parts', function() {
+    urljoin(undefined, 'test', 'path', undefined, 'here')
+      .should.eql('test/path/here');
+  });
+
+  /*TODO it('should not allow double protocols', function() {
+    expect(() => {
+      urljoin('http:', 'www.google.com', 'http://', 'google.com')
+    }).throw('Duplicate protocol signifier http://www.google.comhttp://google.com');
+  });*/
 });
